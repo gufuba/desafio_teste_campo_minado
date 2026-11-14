@@ -291,9 +291,13 @@ describe('Vitoria', () => {
   });
 
   test('ainda ha jogo enquanto restar alguma celula segura fechada', () => {
-    const jogo = new CampoMinado({ posicoesBombas: bombasFixas() });
-    jogo.revelar(13, 17); // cascata na parte de baixo, sem abrir tudo
+    // A celula (0,0) esta cercada por bombas: a cascata nao chega nela.
+    const jogo = new CampoMinado({ posicoesBombas: [[0, 1], [1, 0], [1, 1]] });
+    jogo.revelar(13, 17);
+    expect(jogo.celula(0, 0).aberta).toBe(false);
     expect(jogo.estado).toBe('jogando');
+    jogo.revelar(0, 0); // ultima celula segura
+    expect(jogo.estado).toBe('vitoria');
   });
 
   test('depois da vitoria nao e permitido jogar', () => {
